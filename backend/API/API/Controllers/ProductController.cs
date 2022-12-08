@@ -2,13 +2,11 @@
 using API.Models;
 using System.Linq;
 namespace API.Controllers
+
 {
+    [ApiController]
     public class ProductController : Controller
     {
-        [ApiController]
-
-        public class SanPhamController : Controller
-        {
             APIContext db = new APIContext();
             [Route("getall")]
             [HttpGet]
@@ -74,6 +72,6 @@ namespace API.Controllers
                 }).Where(x => x.name.Contains(name)).ToList();
                 return Json(obj);
             }
-        }
+        
     }
 }

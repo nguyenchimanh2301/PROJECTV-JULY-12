@@ -2,47 +2,57 @@
 using API.Models;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace API.Controllers
 {
     [ApiController]
     public class CustomerController : Controller
     {
-            APIContext db = new APIContext();
+        APIContext db = new APIContext();
+        [Route("get_Cus")]
+        [HttpGet]
+        public IActionResult Getcus()
+        {
+            var cus = db.KhachHang.Select(x => new {
+                TenKh = x.TenKh
+            }).ToList();
+            return Json(cus);
+        }
             [Route("checkout")]
             [HttpPost]
             public IActionResult Createbill([FromBody] checkout model)
+             {
+            model.kh.Id ="KH-"+Guid.NewGuid().ToString();
+            db.KhachHang.Add(model.kh);
+            db.SaveChanges();
+            string MaKhachHang = model.kh.Id;
+            Donhang dh = new Donhang();
+
+            dh.MaDonHang = "DH-"+Guid.NewGuid().ToString();
+            dh.MaKhachHang = MaKhachHang;
+            dh.Trangthai = "ok";
+            dh.Ngaydat = DateTime.Now;
+            db.Donhang.Add(dh);
+            db.SaveChanges();
+            string MaDonHang = dh.MaDonHang;
+
+            if (model.donhang.Count > 0)
             {
-                db.KhachHang.Add(model.kh);
-                db.SaveChanges();
-
-                string MaKhachHang = model.kh.Id;
-                BillsBan dh = new BillsBan();
-                dh.Id = MaKhachHang;
-                dh.Trangthai = "ok";
-                db.BillsBan.Add(dh);
-                db.SaveChanges();
-                string MaDonHang = dh.Id;
-
-                if (model.donhang.Count > 0)
+                foreach (var item in model.donhang)
                 {
-                    foreach (var item in model.donhang)
-                    {
-                        item.Id = MaDonHang;
-                        db.BillDetailBan.Add(item);
-                    }
-                    db.SaveChanges();
+                    item.MaDonHang = "CTDH-"+MaDonHang;
+                    db.ChiTietDonHang.Add(item);
                 }
-                return Ok(new { data = "OK" });
+                db.SaveChanges();
+            }
+            return Ok(new { data = "OK" });
 
             }
         }
         public class checkout
         {
-
-            public KhachHang kh;
-            public List<BillDetailBan> donhang { get; set; }
-
-
+            public KhachHang kh { get; set; }
+            public List<ChiTietDonHang> donhang { get; set; }
         }
     }

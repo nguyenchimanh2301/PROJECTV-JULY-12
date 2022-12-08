@@ -6,7 +6,6 @@ namespace API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
     public class UserController : Controller
     {
             private IUserService _userService;

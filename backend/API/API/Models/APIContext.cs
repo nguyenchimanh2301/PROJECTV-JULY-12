@@ -24,6 +24,7 @@ namespace API.Models
         public virtual DbSet<BillDetailNhap> BillDetailNhap { get; set; }
         public virtual DbSet<BillsBan> BillsBan { get; set; }
         public virtual DbSet<BillsNhap> BillsNhap { get; set; }
+        public virtual DbSet<ChiTietDonHang> ChiTietDonHang { get; set; }
         public virtual DbSet<Donhang> Donhang { get; set; }
         public virtual DbSet<KhachHang> KhachHang { get; set; }
         public virtual DbSet<LoaiSp> LoaiSp { get; set; }
@@ -37,7 +38,7 @@ namespace API.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=LAPTOP-LLHPT87U\\SQLEXPRESS;Database=API;Trusted_Connection=True;Encrypt=False;");
+                optionsBuilder.UseSqlServer("Server=LAPTOP-LLHPT87U\\SQLEXPRESS;Database=API;Trusted_Connection=True;Encrypt=False");
             }
         }
 
@@ -250,6 +251,31 @@ namespace API.Models
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("updated_at")
                     .HasColumnType("date");
+            });
+
+            modelBuilder.Entity<ChiTietDonHang>(entity =>
+            {
+                entity.HasKey(e => e.MaChiTietDonHang);
+
+                entity.Property(e => e.MaChiTietDonHang).ValueGeneratedNever();
+
+                entity.Property(e => e.MaDonHang)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.MaSanPham)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.MaDonHangNavigation)
+                    .WithMany(p => p.ChiTietDonHang)
+                    .HasForeignKey(d => d.MaDonHang)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ChiTietDonHang_Donhang");
             });
 
             modelBuilder.Entity<Donhang>(entity =>

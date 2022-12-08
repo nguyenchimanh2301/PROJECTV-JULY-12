@@ -9,9 +9,16 @@ namespace API.Models
 {
     public partial class Donhang
     {
+        public Donhang()
+        {
+            ChiTietDonHang = new HashSet<ChiTietDonHang>();
+        }
+
         public string MaDonHang { get; set; }
         public string MaKhachHang { get; set; }
         public DateTime Ngaydat { get; set; }
         public string Trangthai { get; set; }
+
+        public virtual ICollection<ChiTietDonHang> ChiTietDonHang { get; set; }
     }
 }
