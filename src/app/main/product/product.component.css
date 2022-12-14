@@ -1,0 +1,13 @@
+
+.modal-contain{
+    position: absolute;
+    width: 50%;
+    height:80%;
+    left: 30%;
+    background-color:rgba(232, 223, 223, 0.92);
+}
+.row-toolbar{
+    height: 200px;
+    width: 100%;
+    /* background-color: rebeccapurple; */
+}
